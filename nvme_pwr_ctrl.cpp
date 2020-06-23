@@ -58,7 +58,7 @@ static void PowerStateMonitor()
         *conn,
         "type='signal',member='PropertiesChanged', "
         "interface='org.freedesktop.DBus.Properties', "
-        "arg0namespace=xyz.openbmc_project.control.nvme.power",
+        "arg0namespace=xyz.openbmc_project.Control.Nvme.Power",
         [](sdbusplus::message::message& m) {
             std::string intfName;
             boost::container::flat_map<std::string,
@@ -75,7 +75,6 @@ static void PowerStateMonitor()
             std::string delimiter = "/";
             while((pos = obj_path.find(delimiter)) != std::string::npos) {
                  token = obj_path.substr(0, pos);
-                 std::cout << token << std::endl;
                  obj_path.erase(0, pos + delimiter.length());
             }
             line_name.assign(obj_path);
