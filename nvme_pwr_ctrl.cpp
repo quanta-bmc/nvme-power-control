@@ -82,9 +82,15 @@ static void PowerStateMonitor()
 
             try
             {
-                bool value = std::get<bool>(propertiesChanged.begin()->second);
-                std::cerr << "value: " << value << "\n";
+                auto state = std::get<std::string>(propertiesChanged.begin()->second);
+                std::cerr << "state: " << state << "\n";
                 gpiod::line line;
+                int value;
+                if ( state == "xyz.openbmc_project.Control.Nvme.Power.SlotDisabled" \
+                     || state == "xyz.openbmc_project.Control.Nvme.Power.On")
+                    value = 1;
+                else
+                    value = 0;
                 setGPIOOutput(line_name, value, line);
                 // Release line
                 line.reset();
@@ -121,7 +127,8 @@ int main(int argc, char* argv[])
         nvme_pwr_ctrl::pwrDisIface[i] = 
             server.add_interface(
                  nvme_pwr_ctrl::pwrDisPath[i], nvme_pwr_ctrl::nvmePowerIface);
-        nvme_pwr_ctrl::pwrDisIface[i]->register_property("Asserted", false,
+        nvme_pwr_ctrl::pwrDisIface[i]->register_property("Asserted",
+            std::string("xyz.openbmc_project.Control.Nvme.Power.SlotEnabled"),
             sdbusplus::asio::PropertyPermission::readWrite);
         nvme_pwr_ctrl::pwrDisIface[i]->initialize();
 
@@ -134,7 +141,8 @@ int main(int argc, char* argv[])
         nvme_pwr_ctrl::pwrEnIface[i] = 
             server.add_interface(
                 nvme_pwr_ctrl::pwrEnPath[i], nvme_pwr_ctrl::nvmePowerIface);
-        nvme_pwr_ctrl::pwrEnIface[i]->register_property("Asserted", true,
+        nvme_pwr_ctrl::pwrEnIface[i]->register_property("Asserted",
+            std::string("xyz.openbmc_project.Control.Nvme.Power.On"),
             sdbusplus::asio::PropertyPermission::readWrite);
         nvme_pwr_ctrl::pwrEnIface[i]->initialize();
     }
