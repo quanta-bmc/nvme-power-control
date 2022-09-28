@@ -1,5 +1,6 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/posix/stream_descriptor.hpp>
+#include <boost/container/flat_map.hpp>
 #include <gpiod.hpp>
 #include <string.h>
 #include <iostream>
